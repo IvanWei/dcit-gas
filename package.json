@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "push": "npx clasp push -f"
+    "push": "npx clasp push -f",
+    "deploy": "npx clasp deploy"
   },
   "repository": {
     "type": "git",
