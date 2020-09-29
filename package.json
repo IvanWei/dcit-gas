@@ -1,0 +1,32 @@
+{
+  "name": "dcit-gas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "push": "npx clasp push -f"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/IvanWei/dcit-gas.git"
+  },
+  "keywords": [
+    "google",
+    "app",
+    "script",
+    "conference",
+    "list"
+  ],
+  "author": "Wei, Hong-Lin <scorpionseed@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/IvanWei/dcit-gas/issues"
+  },
+  "engines": {
+    "node" : ">=10.3.0"
+  },
+  "homepage": "https://github.com/IvanWei/dcit-gas#readme",
+  "dependencies": {
+    "@google/clasp": "^2.3.0"
+  }
+}
