@@ -7,9 +7,6 @@ function doGet(e) {
     // 取得 Target Sheet
     const sheet = app.getSheets()[0];
 
-    // 設定使用的 Sheet
-    // app.setActiveSheet(sheet);
-
     // 取得所有 Activity 資料
     const sheetData = func.getSheetAllData(sheet);
     const newSheetData = sheetData.filter(function(data) {
