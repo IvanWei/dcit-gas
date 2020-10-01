@@ -58,13 +58,13 @@ var func = {
 
       // 售票時間狀態
       if (ticketSource) {
-        if (new Date(ticketStartTime).getTime() >= now && new Date(ticketEndTime).getTime() <= now) {
+        if (now >= new Date(ticketStartTime).getTime() && now <= new Date(ticketEndTime).getTime()) {
           ticketTitle = 'Register Now';
         }
-        else if (new Date(ticketStartTime).getTime() < now) {
+        else if (now < new Date(ticketStartTime).getTime()) {
           ticketTitle = 'Not Yet Started';
         }
-        else if (new Date(ticketEndTime).getTime() > now) {
+        else if (now > new Date(ticketEndTime).getTime()) {
           ticketTitle = 'End';
         }
       }
