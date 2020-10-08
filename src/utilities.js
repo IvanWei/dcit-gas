@@ -51,6 +51,7 @@ var func = {
 
       // 確認活動日期的顯示狀態
       var now = Date.now();
+      var oneDay = 1000 * 60 * 60 * 24;
       var startDate = startMonth?new Date(year, (startMonth - 1), startDay):null;
       var endDate = endMonth?new Date(year, (endMonth - 1), endDay):null;
       var startWeekName = startDate?weekNames[startDate.getDay()]:'---';
@@ -58,26 +59,26 @@ var func = {
 
       // 售票時間狀態
       if (ticketSource) {
-        if (now >= new Date(ticketStartTime).getTime() && now <= new Date(ticketEndTime).getTime()) {
+        if (now >= new Date(ticketStartTime).getTime() && now <= (new Date(ticketEndTime).getTime() + oneDay)) {
           ticketTitle = 'Register Now';
         }
         else if (now < new Date(ticketStartTime).getTime()) {
           ticketTitle = 'Not Yet Started';
         }
-        else if (now > new Date(ticketEndTime).getTime()) {
+        else if (now > (new Date(ticketEndTime).getTime() + oneDay)) {
           ticketTitle = 'End';
         }
       }
 
       // 講師招募時間狀態
       if (c4sSource) {
-        if (new Date(c4sStartTime).getTime() >= now && new Date(c4sEndTime).getTime() <= now) {
+        if (now >= new Date(c4sStartTime).getTime() && now <= (new Date(c4sEndTime).getTime() + oneDay)) {
           callForSpeakerTitle = 'Link';
         }
-        else if (new Date(c4sStartTime).getTime() < now) {
+        else if (now < new Date(c4sStartTime).getTime()) {
           callForSpeakerTitle = 'Not Yet Started';
         }
-        else if (new Date(c4sEndTime).getTime() > now) {
+        else if (now > (new Date(c4sEndTime).getTime() + oneDay)) {
           callForSpeakerTitle = 'End';
         }
       }
