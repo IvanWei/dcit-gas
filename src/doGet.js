@@ -1,5 +1,7 @@
 function doGet(e) {
   try {
+    var params = (e && e.parameter) || {};
+    var type = params.type || 'md';
     var sheetId = func.getSheetId();
 
     // 取得 Spreadsheet
@@ -14,11 +16,22 @@ function doGet(e) {
       return status === 'success';
     });
 
-    const result = func.transfer(newSheetData);
+    var result = null;
+
+    switch (type) {
+      case 'md':
+        result = func.transfer(newSheetData);
+        break;
+      case 'api':
+        result = [];
+        break;
+      default:
+        result = [];
+    }
 
     return ContentService.createTextOutput(JSON.stringify({data: result}))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (e) {
-    Logger.log(e);
+    insertLog('error', e);
   }
 }

@@ -72,15 +72,16 @@ var func = {
 
       // 講師招募時間狀態
       if (c4sSource) {
-        if (now >= new Date(c4sStartTime).getTime() && now <= (new Date(c4sEndTime).getTime() + oneDay)) {
-          callForSpeakerTitle = 'Link';
-        }
-        else if (now < new Date(c4sStartTime).getTime()) {
-          callForSpeakerTitle = 'Not Yet Started';
-        }
-        else if (now > (new Date(c4sEndTime).getTime() + oneDay)) {
-          callForSpeakerTitle = 'End';
-        }
+        callForSpeakerTitle = 'Link';
+        // if (now >= new Date(c4sStartTime).getTime() && now <= (new Date(c4sEndTime).getTime() + oneDay)) {
+        //   callForSpeakerTitle = 'Link';
+        // }
+        // else if (now < new Date(c4sStartTime).getTime()) {
+        //   callForSpeakerTitle = 'Not Yet Started';
+        // }
+        // else if (now > (new Date(c4sEndTime).getTime() + oneDay)) {
+        //   callForSpeakerTitle = 'End';
+        // }
       }
 
       var isDiffYear = ((currentYear === 0) || (currentYear !== year));
@@ -111,6 +112,7 @@ var func = {
         'Start date': formatDate(startDate),
         'End date': formatDate(endDate),
         'Name': createLink(title, link),
+        'Oversea': (oversea?'✔':''),
         'Ticket': createLink(ticketTitle, ticketSource),
         'Call for Speaker': createLink(callForSpeakerTitle, c4sSource),
         'Venue': location,
