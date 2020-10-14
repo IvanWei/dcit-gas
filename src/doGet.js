@@ -1,7 +1,7 @@
 function doGet(e) {
   try {
     var params = (e && e.parameter) || {};
-    var type = params.type || 'md';
+    var type = params.type || '';
     var sheetId = func.getSheetId();
 
     // 取得 Spreadsheet
