@@ -1,3 +1,4 @@
+// eslint-disable-next-line  no-unused-vars
 function doGet(e) {
   try {
     var params = (e && e.parameter) || {};
@@ -12,7 +13,7 @@ function doGet(e) {
     // 取得所有 Activity 資料
     const sheetData = func.getSheetAllData(sheet);
     const newSheetData = sheetData.filter(function(data) {
-      const [status] = data;
+      var [status] = data;
       return status === 'success';
     });
 
@@ -30,7 +31,7 @@ function doGet(e) {
     }
 
     return ContentService.createTextOutput(JSON.stringify({data: result}))
-      .setMimeType(ContentService.MimeType.JSON);
+        .setMimeType(ContentService.MimeType.JSON);
   } catch (e) {
     insertLog('error', e);
   }

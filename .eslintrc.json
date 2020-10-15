@@ -1,0 +1,23 @@
+{
+  "extends": ["eslint:recommended", "google"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "script"
+  },
+  "env": {
+    "browser": false,
+    "node": true
+  },
+  "globals": {
+    "SpreadsheetApp": true,
+    "PropertiesService": true,
+    "ContentService": true,
+    "func": true,
+    "insertLog": true
+  },
+  "rules": {
+    "no-var": 0,
+    "require-jsdoc": 0,
+    "max-len": ["error", { "code": 100 }]
+  }
+}

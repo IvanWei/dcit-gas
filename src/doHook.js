@@ -1,3 +1,4 @@
+// eslint-disable-next-line  no-unused-vars
 function doSort() {
   var sheetId = func.getSheetId();
   const app = SpreadsheetApp.openById(sheetId);
@@ -19,6 +20,6 @@ function doSort() {
     {column: 4},
     {column: 5},
     {column: 6},
-    {column: 7}
+    {column: 7},
   ]);
 }

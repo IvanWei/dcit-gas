@@ -6,6 +6,7 @@ var weekNames = ['Sun', 'Mon', 'Tue', 'Web', 'Thu', 'Fri', 'Sat'];
 var currentYear = 0;
 var currentMonth = 0;
 
+// eslint-disable-next-line  no-unused-vars
 var func = {
   getSheetId: function() {
     return PropertiesService.getScriptProperties().getProperty('sheet_id');
@@ -20,7 +21,9 @@ var func = {
     var rowFieldCount = currentSheet.getLastRow() - skipRow;
     var columnFieldCount = currentSheet.getLastColumn();
 
-    return currentSheet.getSheetValues(startRowPos, startColumnPos, rowFieldCount, columnFieldCount);
+    return currentSheet.getSheetValues(
+        startRowPos, startColumnPos, rowFieldCount, columnFieldCount
+    );
   },
   // 轉換 Sheet 的 Data 從 Array 轉成預計顯示的 Markdown (json2md) 格式
   transfer: function(sheetData) {
@@ -28,24 +31,25 @@ var func = {
     var rowTables = [];
 
     function formatDate(date) {
-      return (!date)? '---': ((date.getMonth() + 1) + '.' + date.getDate() + ' (' + weekNames[date.getDay()] + ')');
+      return (!date)?'---':
+        ((date.getMonth() + 1) + '.' + date.getDate() + ' (' + weekNames[date.getDay()] + ')');
     }
     function createLink(name, link) {
       return (!link)? name:({link: {title: name, source: link}});
     }
 
     sheetData.forEach(function(data) {
+      // eslint-disable-next-line  no-unused-vars
       var [status, title, flag, year,
-           startMonth, startDay,
-           endMonth, endDay,
-           location, oversea, link,
-           ticketSource, ticketStartTime, ticketEndTime,
-           //c4s = call for spearker
-           c4sSource, c4sStartTime, c4sEndTime
-          ] = data;
-      var tranFlag = flag && flag.length > 0?flag.split(','):[];
+        startMonth, startDay,
+        endMonth, endDay,
+        location, oversea, link,
+        ticketSource, ticketStartTime, ticketEndTime,
+        // eslint-disable-next-line  no-unused-vars
+        c4sSource, c4sStartTime, c4sEndTime,
+      ] = data;
+      // var tranFlag = flag && flag.length > 0?flag.split(','):[];
 
-      var triggerPushData = false;
       var ticketTitle = '---';
       var callForSpeakerTitle = '---';
 
@@ -54,18 +58,16 @@ var func = {
       var oneDay = 1000 * 60 * 60 * 24;
       var startDate = startMonth?new Date(year, (startMonth - 1), startDay):null;
       var endDate = endMonth?new Date(year, (endMonth - 1), endDay):null;
-      var startWeekName = startDate?weekNames[startDate.getDay()]:'---';
-      var endWeekName = endDate?weekNames[endDate.getDay()]:'---';
 
       // 售票時間狀態
       if (ticketSource) {
-        if (now >= new Date(ticketStartTime).getTime() && now <= (new Date(ticketEndTime).getTime() + oneDay)) {
+        if (now >= new Date(ticketStartTime).getTime() &&
+            now <= (new Date(ticketEndTime).getTime() + oneDay)
+        ) {
           ticketTitle = 'Register Now';
-        }
-        else if (now < new Date(ticketStartTime).getTime()) {
+        } else if (now < new Date(ticketStartTime).getTime()) {
           ticketTitle = 'Not Yet Started';
-        }
-        else if (now > (new Date(ticketEndTime).getTime() + oneDay)) {
+        } else if (now > (new Date(ticketEndTime).getTime() + oneDay)) {
           ticketTitle = 'End';
         }
       }
@@ -73,6 +75,7 @@ var func = {
       // 講師招募時間狀態
       if (c4sSource) {
         callForSpeakerTitle = 'Link';
+        // eslint-disable-next-line  max-len
         // if (now >= new Date(c4sStartTime).getTime() && now <= (new Date(c4sEndTime).getTime() + oneDay)) {
         //   callForSpeakerTitle = 'Link';
         // }
@@ -102,8 +105,10 @@ var func = {
 
         result.push({'h2': (currentMonth?monthNames[currentMonth -1]:'UnKnown')});
         result.push({'table': {
-          'headers': ['Start date', 'End date', 'Name', 'Oversea', 'Ticket', 'Call for Speaker', 'Venue'],
-          'rows': rowTables
+          'headers': ['Start date', 'End date', 'Name', 'Oversea',
+            'Ticket', 'Call for Speaker', 'Venue',
+          ],
+          'rows': rowTables,
         }});
       }
 
@@ -120,5 +125,5 @@ var func = {
     });
 
     return result;
-  }
-}
+  },
+};

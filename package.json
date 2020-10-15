@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "push": "npx clasp push -f",
-    "deploy": "npx clasp deploy"
+    "deploy": "npx clasp deploy",
+    "linter": "npx eslint ./src/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,10 +25,14 @@
     "url": "https://github.com/IvanWei/dcit-gas/issues"
   },
   "engines": {
-    "node" : ">=10.3.0"
+    "node": ">=10.3.0"
   },
   "homepage": "https://github.com/IvanWei/dcit-gas#readme",
   "dependencies": {
     "@google/clasp": "^2.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "eslint-config-google": "^0.14.0"
   }
 }
