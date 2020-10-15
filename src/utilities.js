@@ -102,7 +102,7 @@ var func = {
 
         result.push({'h2': (currentMonth?monthNames[currentMonth -1]:'UnKnown')});
         result.push({'table': {
-          'headers': ['Start date', 'End date', 'Name','Ticket', 'Call for Speaker', 'Venue'],
+          'headers': ['Start date', 'End date', 'Name', 'Oversea', 'Ticket', 'Call for Speaker', 'Venue'],
           'rows': rowTables
         }});
       }
