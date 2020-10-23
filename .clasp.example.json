@@ -1,1 +1,4 @@
-{"scriptId":""}
+{
+  "scriptId":"",
+  "rootDir": "./src"
+}
