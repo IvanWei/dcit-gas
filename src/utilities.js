@@ -120,7 +120,7 @@ var func = {
         'Oversea': (oversea?'✔':''),
         'Ticket': createLink(ticketTitle, ticketSource),
         'Call for Speaker': createLink(callForSpeakerTitle, c4sSource),
-        'Venue': createLink((location + ' (Open Map)'), ('https://maps.google.com/?q=' + location)),
+        'Venue': createLink(location, ('https://maps.google.com/?q=' + encodeURI(location))),
       });
     });
 
