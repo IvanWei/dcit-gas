@@ -38,91 +38,128 @@ var func = {
       return (!link)? name:({link: {title: name, source: link}});
     }
 
-    sheetData.forEach(function(data) {
-      // eslint-disable-next-line  no-unused-vars
-      var [status, title, flag, year,
-        startMonth, startDay,
-        endMonth, endDay,
-        location, oversea, link,
-        ticketSource, ticketStartTime, ticketEndTime,
-        // eslint-disable-next-line  no-unused-vars
-        c4sSource, c4sStartTime, c4sEndTime,
-      ] = data;
-      // var tranFlag = flag && flag.length > 0?flag.split(','):[];
+    sheetData
+        .reduce(function(result, data) {
+          var [status, title, flag, year,
+            startMonth, startDay,
+            endMonth, endDay,
+            location, oversea, link,
+            ticketSource, ticketStartTime, ticketEndTime,
+            c4sSource, c4sStartTime, c4sEndTime,
+          ] = data;
 
-      var ticketTitle = '---';
-      var callForSpeakerTitle = '---';
+          result.push([
+            status, title, flag, year, startMonth, startDay,
+            endMonth, endDay, location, oversea, link,
+            ticketSource, ticketStartTime, ticketEndTime, false,
+          ]);
 
-      // 確認活動日期的顯示狀態
-      var now = Date.now();
-      var oneDay = 1000 * 60 * 60 * 24;
-      var startDate = startMonth?new Date(year, (startMonth - 1), startDay):null;
-      var endDate = endMonth?new Date(year, (endMonth - 1), endDay):null;
+          if (c4sSource) {
+            var currentStartDate = new Date(c4sStartTime);
+            var currentEndDate = new Date(c4sEndTime);
+            var currentYear = currentStartDate.getFullYear();
+            var currentStartMonth = currentStartDate.getMonth() + 1;
+            var currentStartdate = currentStartDate.getDate();
+            var currentEndMonth = currentEndDate.getMonth() + 1;
+            var currentEnddate = currentEndDate.getDate();
 
-      // 售票時間狀態
-      if (ticketSource) {
-        if (now >= new Date(ticketStartTime).getTime() &&
-            now <= (new Date(ticketEndTime).getTime() + oneDay)
-        ) {
-          ticketTitle = 'Register Now';
-        } else if (now < new Date(ticketStartTime).getTime()) {
-          ticketTitle = 'Not Yet Started';
-        } else if (now > (new Date(ticketEndTime).getTime() + oneDay)) {
-          ticketTitle = 'End';
-        }
-      }
+            result.push([
+              status, title, flag, currentYear, currentStartMonth, currentStartdate,
+              currentEndMonth, currentEnddate, location, oversea, link,
+              c4sSource, ticketStartTime, ticketEndTime, true,
+            ]);
+          }
 
-      // 講師招募時間狀態
-      if (c4sSource) {
-        callForSpeakerTitle = 'Link';
-        // eslint-disable-next-line  max-len
-        // if (now >= new Date(c4sStartTime).getTime() && now <= (new Date(c4sEndTime).getTime() + oneDay)) {
-        //   callForSpeakerTitle = 'Link';
-        // }
-        // else if (now < new Date(c4sStartTime).getTime()) {
-        //   callForSpeakerTitle = 'Not Yet Started';
-        // }
-        // else if (now > (new Date(c4sEndTime).getTime() + oneDay)) {
-        //   callForSpeakerTitle = 'End';
-        // }
-      }
+          return result;
+        }, [])
+        .sort(function(currentValue, nextValue) {
+          return (new Date(currentValue[3], (currentValue[4] - 1), currentValue[5]) -
+        new Date(nextValue[3], (nextValue[4] - 1), nextValue[5]));
+        })
+        .forEach(function(data) {
+          // eslint-disable-next-line  no-unused-vars
+          var [status, title, flag, year,
+            startMonth, startDay,
+            endMonth, endDay,
+            location, oversea, link,
+            ticketSource, ticketStartTime, ticketEndTime, isC4s,
+          ] = data;
+          // var tranFlag = flag && flag.length > 0?flag.split(','):[];
 
-      var isDiffYear = ((currentYear === 0) || (currentYear !== year));
-      var isDiffMonth = ((currentMonth === 0) || (currentMonth !== startMonth));
+          var ticketTitle = '---';
 
-      if (isDiffYear) {
-        currentYear = year;
-        result.push({'h1': 'Developer Conferences in Taiwan ' + year});
-      }
+          // 確認活動日期的顯示狀態
+          var now = Date.now();
+          var oneDay = 1000 * 60 * 60 * 24;
+          var startDate = startMonth?new Date(year, (startMonth - 1), startDay):null;
+          var endDate = endMonth?new Date(year, (endMonth - 1), endDay):null;
 
-      if (isDiffMonth) {
-        // 第一次先不清 Data
-        if (currentMonth !== 0) {
-          rowTables = [];
-        }
+          // 售票時間狀態
+          if (ticketSource) {
+            var thisStartTime = !isC4s?ticketStartTime:startDate;
+            var thisEndTime = !isC4s?ticketEndTime:endDate;
 
-        currentMonth = startMonth;
+            if (now >= new Date(thisStartTime).getTime() &&
+            now <= (new Date(thisEndTime).getTime() + oneDay)
+            ) {
+              ticketTitle = 'Register Now';
+            } else if (now < new Date(thisStartTime).getTime()) {
+              ticketTitle = 'Not Yet Started';
+            } else if (now > (new Date(thisEndTime).getTime() + oneDay)) {
+              ticketTitle = 'End';
+            }
+          }
 
-        result.push({'h2': (currentMonth?monthNames[currentMonth -1]:'UnKnown')});
-        result.push({'table': {
-          'headers': ['Start date', 'End date', 'Name', 'Oversea',
-            'Ticket', 'Call for Speaker', 'Venue',
-          ],
-          'rows': rowTables,
-        }});
-      }
+          var isDiffYear = ((currentYear === 0) || (currentYear !== year));
+          var isDiffMonth = ((currentMonth === 0) || (currentMonth !== startMonth));
 
-      rowTables.push({
-        'Year': year,
-        'Start date': formatDate(startDate),
-        'End date': formatDate(endDate),
-        'Name': createLink(title, link),
-        'Oversea': (oversea?'✔':''),
-        'Ticket': createLink(ticketTitle, ticketSource),
-        'Call for Speaker': createLink(callForSpeakerTitle, c4sSource),
-        'Venue': createLink(location, ('https://maps.google.com/?q=' + encodeURI(location))),
-      });
-    });
+          if (isDiffYear) {
+            currentYear = year;
+            result.push({'h1': 'Developer Conferences in Taiwan ' + year});
+          }
+
+          if (isDiffMonth) {
+            // 第一次先不清 Data
+            if (currentMonth !== 0) {
+              rowTables = [];
+            }
+
+            currentMonth = startMonth;
+
+            result.push({'h2': (currentMonth?monthNames[currentMonth -1]:'UnKnown')});
+            result.push({'table': {
+              'headers': ['Start date', 'End date', 'Name', 'Oversea',
+                'Ticket', 'Call for Speaker', 'Venue',
+              ],
+              'rows': rowTables,
+            }});
+          }
+
+          if (!isC4s) {
+            rowTables.push({
+              'Year': year,
+              'Start date': formatDate(startDate),
+              'End date': formatDate(endDate),
+              'Name': createLink(title, link),
+              'Oversea': (oversea?'🛫':'🛵'),
+              'Ticket': createLink(ticketTitle, ticketSource),
+              'Call for Speaker': '---',
+              'Venue': createLink(location, ('https://maps.google.com/?q=' + encodeURI(location))),
+            });
+          } else {
+            // 講師招募時間狀態
+            rowTables.push({
+              'Year': year,
+              'Start date': formatDate(startDate),
+              'End date': formatDate(endDate),
+              'Name': createLink(('[徵稿] ' + title), link),
+              'Oversea': (oversea?'🛫':'🛵'),
+              'Ticket': '---',
+              'Call for Speaker': createLink(ticketTitle, ticketSource),
+              'Venue': createLink(location, ('https://maps.google.com/?q=' + encodeURI(location))),
+            });
+          }
+        });
 
     return result;
   },
