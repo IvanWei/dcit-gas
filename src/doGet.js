@@ -12,19 +12,15 @@ function doGet(e) {
 
     // 取得所有 Activity 資料
     const sheetData = func.getSheetAllData(sheet);
-    const newSheetData = sheetData.filter(function(data) {
-      var [status] = data;
-      return status === 'success';
-    });
 
     var result = null;
 
     switch (type) {
       case 'md':
-        result = func.transfer(newSheetData);
+        result = func.transfer(sheetData);
         break;
       case 'api':
-        result = [];
+        result = func.transferApi(sheetData);;
         break;
       default:
         result = [];

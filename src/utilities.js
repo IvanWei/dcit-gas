@@ -3,8 +3,8 @@ var monthNames = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 var weekNames = ['Sun', 'Mon', 'Tue', 'Web', 'Thu', 'Fri', 'Sat'];
-var currentYear = 0;
-var currentMonth = 0;
+var currentYear = null;
+var currentMonth = null;
 
 // eslint-disable-next-line  no-unused-vars
 var func = {
@@ -23,7 +23,10 @@ var func = {
 
     return currentSheet.getSheetValues(
         startRowPos, startColumnPos, rowFieldCount, columnFieldCount
-    );
+    ).filter(function(data) {
+      var [status] = data;
+      return status === 'success';
+    });
   },
   // 轉換 Sheet 的 Data 從 Array 轉成預計顯示的 Markdown (json2md) 格式
   transfer: function(sheetData) {
@@ -40,17 +43,14 @@ var func = {
 
     sheetData
         .reduce(function(result, data) {
-          var [status, title, flag, year,
-            startMonth, startDay,
-            endMonth, endDay,
+          var [status, title, flag, startDate, endDate,
             location, oversea, link,
             ticketSource, ticketStartTime, ticketEndTime,
             c4sSource, c4sStartTime, c4sEndTime,
           ] = data;
 
           result.push([
-            status, title, flag, year, startMonth, startDay,
-            endMonth, endDay, location, oversea, link,
+            status, title, flag, startDate, endDate, location, oversea, link,
             ticketSource, ticketStartTime, ticketEndTime, false,
           ]);
 
@@ -72,15 +72,28 @@ var func = {
 
           return result;
         }, [])
+        .filter(function (data) {
+          var thisYear = (new Date()).getFullYear();
+          var [status, title, flag, startDate, endDate,
+            location, oversea, link,
+            ticketSource, ticketStartTime, ticketEndTime,
+            c4sSource, c4sStartTime, c4sEndTime,
+          ] = data;
+
+          return (
+            (new Date(startDate).getFullYear() >= thisYear
+              && (new Date(startDate).getMonth() >= new Date().getMonth())
+              && (new Date(endDate).getDate() <= new Date().getDate())
+            )
+            || new Date(c4sStartTime).getFullYear() >= thisYear
+            );
+        })
         .sort(function(currentValue, nextValue) {
-          return (new Date(currentValue[3], (currentValue[4] - 1), currentValue[5]) -
-        new Date(nextValue[3], (nextValue[4] - 1), nextValue[5]));
+          return (new Date(currentValue[3]).getTime() - new Date(nextValue[3]).getTime());
         })
         .forEach(function(data) {
           // eslint-disable-next-line  no-unused-vars
-          var [status, title, flag, year,
-            startMonth, startDay,
-            endMonth, endDay,
+          var [status, title, flag, startDate, endDate,
             location, oversea, link,
             ticketSource, ticketStartTime, ticketEndTime, isC4s,
           ] = data;
@@ -91,8 +104,8 @@ var func = {
           // 確認活動日期的顯示狀態
           var now = Date.now();
           var oneDay = 1000 * 60 * 60 * 24;
-          var startDate = startMonth?new Date(year, (startMonth - 1), startDay):null;
-          var endDate = endMonth?new Date(year, (endMonth - 1), endDay):null;
+          startDate = startDate?new Date(startDate):null;
+          endDate = endDate?new Date(endDate):null;
 
           // 售票時間狀態
           if (ticketSource) {
@@ -110,23 +123,23 @@ var func = {
             }
           }
 
-          var isDiffYear = ((currentYear === 0) || (currentYear !== year));
-          var isDiffMonth = ((currentMonth === 0) || (currentMonth !== startMonth));
+          var isDiffYear = ((currentYear === null) || (currentYear !== new Date(startDate).getFullYear()));
+          var isDiffMonth = ((currentMonth === null) || (currentMonth !== new Date(startDate).getMonth()));
 
           if (isDiffYear) {
-            currentYear = year;
-            result.push({'h1': 'Developer Conferences in Taiwan ' + year});
+            currentYear = new Date(startDate).getFullYear();
+            result.push({'h1': 'Developer Conferences in Taiwan ' + new Date(startDate).getFullYear()});
           }
 
           if (isDiffMonth) {
             // 第一次先不清 Data
-            if (currentMonth !== 0) {
+            if (currentMonth !== null) {
               rowTables = [];
             }
 
-            currentMonth = startMonth;
+            currentMonth = new Date(startDate).getMonth();
 
-            result.push({'h2': (currentMonth?monthNames[currentMonth -1]:'UnKnown')});
+            result.push({'h2': (currentMonth !== null?monthNames[currentMonth]:'UnKnown')});
             result.push({'table': {
               'headers': ['Start date', 'End date', 'Name', 'Oversea',
                 'Ticket', 'Call for Speaker', 'Venue',
@@ -137,28 +150,73 @@ var func = {
 
           if (!isC4s) {
             rowTables.push({
-              'Year': year,
+              'Year': new Date(startDate).getFullYear(),
               'Start date': formatDate(startDate),
               'End date': formatDate(endDate),
               'Name': createLink(title, link),
               'Oversea': (oversea?'🛫':'🛵'),
               'Ticket': createLink(ticketTitle, ticketSource),
               'Call for Speaker': '---',
-              'Venue': createLink(location, ('https://maps.google.com/?q=' + encodeURI(location))),
+              'Venue': createLink(((oversea?'🛫':'🛵') + ' ' + location), ('https://maps.google.com/?q=' + encodeURI(location))),
             });
           } else {
             // 講師招募時間狀態
             rowTables.push({
-              'Year': year,
+              'Year': new Date(startDate).getFullYear(),
               'Start date': formatDate(startDate),
               'End date': formatDate(endDate),
               'Name': createLink(('[徵稿] ' + title), link),
               'Oversea': (oversea?'🛫':'🛵'),
               'Ticket': '---',
               'Call for Speaker': createLink(ticketTitle, ticketSource),
-              'Venue': createLink(location, ('https://maps.google.com/?q=' + encodeURI(location))),
+              'Venue': createLink(((oversea?'🛫':'🛵') + ' ' + location), ('https://maps.google.com/?q=' + encodeURI(location))),
             });
           }
+        });
+
+    return result;
+  },
+  transferApi: function(sheetData) {
+    var result = [];
+    var rowTables = [];
+
+    sheetData
+        .reduce(function(result, data) {
+          var [status, title, flag, year,
+            startMonth, startDay,
+            endMonth, endDay,
+            location, oversea, link,
+            ticketSource, ticketStartTime, ticketEndTime,
+            c4sSource, c4sStartTime, c4sEndTime,
+          ] = data;
+
+          result.push([
+            status, title, flag, year, startMonth, startDay,
+            endMonth, endDay, location, oversea, link,
+            ticketSource, ticketStartTime, ticketEndTime,
+          ]);
+
+          if (c4sSource) {
+            var currentStartDate = new Date(c4sStartTime);
+            var currentEndDate = new Date(c4sEndTime);
+            var currentYear = currentStartDate.getFullYear();
+            var currentStartMonth = currentStartDate.getMonth() + 1;
+            var currentStartdate = currentStartDate.getDate();
+            var currentEndMonth = currentEndDate.getMonth() + 1;
+            var currentEnddate = currentEndDate.getDate();
+
+            result.push([
+              status, title, flag, currentYear, currentStartMonth, currentStartdate,
+              currentEndMonth, currentEnddate, location, oversea, link,
+              c4sSource, ticketStartTime, ticketEndTime,
+            ]);
+          }
+
+          return result;
+        }, [])
+        .sort(function(currentValue, nextValue) {
+          return (new Date(currentValue[3], (currentValue[4] - 1), currentValue[5]) -
+                  new Date(nextValue[3], (nextValue[4] - 1), nextValue[5]));
         });
 
     return result;
