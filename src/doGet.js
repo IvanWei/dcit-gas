@@ -17,10 +17,10 @@ function doGet(e) {
 
     switch (type) {
       case 'md':
-        result = func.transfer(sheetData);
+        result = transfer.md(sheetData);
         break;
       case 'api':
-        result = func.transferApi(sheetData);;
+        result = transfer.api(sheetData);
         break;
       default:
         result = [];
