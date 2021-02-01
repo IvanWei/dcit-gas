@@ -66,7 +66,7 @@ var transfer = {
           return (
             (new Date(startDate).getFullYear() >= thisYear &&
               (new Date(startDate).getMonth() >= new Date().getMonth()) &&
-              (new Date(endDate).getDate() <= new Date().getDate())
+              (new Date(endDate).getDate() >= new Date().getDate())
             ) ||
             new Date(c4sStartTime).getFullYear() >= thisYear
           );
@@ -170,18 +170,15 @@ var transfer = {
 
     sheetData
         .reduce(function(result, data) {
-          var [status, title, flag, year,
-            startMonth, startDay,
-            endMonth, endDay,
+          var [status, title, flag, startDate, endDate,
             location, oversea, link,
             ticketSource, ticketStartTime, ticketEndTime,
             c4sSource, c4sStartTime, c4sEndTime,
           ] = data;
 
           result.push([
-            status, title, flag, year, startMonth, startDay,
-            endMonth, endDay, location, oversea, link,
-            ticketSource, ticketStartTime, ticketEndTime,
+            status, title, flag, startDate, endDate, location, oversea, link,
+            ticketSource, ticketStartTime, ticketEndTime, false,
           ]);
 
           if (c4sSource) {
@@ -196,7 +193,7 @@ var transfer = {
             result.push([
               status, title, flag, currentYear, currentStartMonth, currentStartdate,
               currentEndMonth, currentEnddate, location, oversea, link,
-              c4sSource, ticketStartTime, ticketEndTime,
+              c4sSource, ticketStartTime, ticketEndTime, true,
             ]);
           }
 
