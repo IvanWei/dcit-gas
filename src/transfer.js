@@ -34,17 +34,8 @@ var transfer = {
           ]);
 
           if (c4sSource) {
-            var currentStartDate = new Date(c4sStartTime);
-            var currentEndDate = new Date(c4sEndTime);
-            var currentYear = currentStartDate.getFullYear();
-            var currentStartMonth = currentStartDate.getMonth() + 1;
-            var currentStartdate = currentStartDate.getDate();
-            var currentEndMonth = currentEndDate.getMonth() + 1;
-            var currentEnddate = currentEndDate.getDate();
-
             result.push([
-              status, title, flag, currentYear, currentStartMonth, currentStartdate,
-              currentEndMonth, currentEnddate, location, oversea, link,
+              status, title, flag, c4sStartTime, c4sEndTime, location, oversea, link,
               c4sSource, ticketStartTime, ticketEndTime, true,
             ]);
           }
@@ -64,11 +55,10 @@ var transfer = {
           ] = data;
 
           return (
-            (new Date(startDate).getFullYear() >= thisYear &&
-              (new Date(startDate).getMonth() >= new Date().getMonth()) &&
+            (new Date(endDate).getFullYear() >= thisYear &&
+              (new Date(endDate).getMonth() >= new Date().getMonth()) &&
               (new Date(endDate).getDate() >= new Date().getDate())
-            ) ||
-            new Date(c4sStartTime).getFullYear() >= thisYear
+            )
           );
         })
         .sort(function(currentValue, nextValue) {
