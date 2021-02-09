@@ -21,3 +21,11 @@ var func = {
     });
   },
 };
+
+function validatePostActions (action) {
+  return (['create'].indexOf(action) > -1);
+}
+
+// function validateGetActions (action) {
+//   return (['media', 'empower-list', 'empower-details', 'homepage-bm', 'homepage-testimonials'].indexOf(action) > -1);
+// }
