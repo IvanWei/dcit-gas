@@ -1,6 +1,8 @@
+// eslint-disable-next-line  no-unused-vars
 function doPost(e) {
   try {
     // 取得 Spreadsheet
+    const sheetId = func.getSheetId();
     const app = SpreadsheetApp.openById(sheetId);
     // 取得 Target Sheet
     const currentSheet = app.getSheets()[0];
@@ -9,8 +11,8 @@ function doPost(e) {
     var action = params.action;
 
 
-    if (!validatePostActions(action)) {
-      throw '[Post] Action(' + action + ') is invalid.';
+    if (!func.validatePostActions(action)) {
+      throw new Error('[Post] Action(' + action + ') is invalid.');
     }
 
     switch (action) {
@@ -22,12 +24,12 @@ function doPost(e) {
         var location = params.location;
         var oversea = params.oversea;
         var source = params.source;
-        var source = params.ticketSource;
-        var source = params.ticketStartTime;
-        var source = params.ticketEndTime;
-        var source = params.callForSpeakerSource;
-        var source = params.callForSpeakerStartTime;
-        var source = params.callForSpeakerEndTime;
+        var ticketSource = params.ticketSource;
+        var ticketStartTime = params.ticketStartTime;
+        var ticketEndTime = params.ticketEndTime;
+        var callForSpeakerSource = params.callForSpeakerSource;
+        var callForSpeakerStartTime = params.callForSpeakerStartTime;
+        var callForSpeakerEndTime = params.callForSpeakerEndTime;
 
         // insertLog('info', 'Insert the new row (' + prefixSpreadsheetName + 'create)');
         currentSheet.appendRow(['success', title, flag, startDate, endDate, location, oversea,
@@ -58,14 +60,13 @@ function doPost(e) {
     }
 
     return ContentService
-      .createTextOutput(JSON.stringify({data: null}))
-      .setMimeType(ContentService.MimeType.JSON);
-
+        .createTextOutput(JSON.stringify({data: null}))
+        .setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
     insertLog('error', error);
 
     return ContentService
-      .createTextOutput(JSON.stringify({ error: (error || new Error('Unknown Error')) }))
-      .setMimeType(ContentService.MimeType.JSON);
+        .createTextOutput(JSON.stringify({error: (error || new Error('Unknown Error'))}))
+        .setMimeType(ContentService.MimeType.JSON);
   }
 }
