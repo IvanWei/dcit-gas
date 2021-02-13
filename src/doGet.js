@@ -20,7 +20,7 @@ function doGet(e) {
         result = transfer.md(sheetData);
         break;
       case 'api':
-        result = transfer.api(sheetData);
+        result = transfer.api(sheetData, (params || {}));
         break;
       default:
         result = [];

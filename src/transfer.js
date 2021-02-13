@@ -6,19 +6,19 @@ var weekNames = ['Sun', 'Mon', 'Tue', 'Web', 'Thu', 'Fri', 'Sat'];
 var currentYear = null;
 var currentMonth = null;
 
+function formatDate(date) {
+  return (!date)?'---':
+    ((date.getMonth() + 1) + '.' + date.getDate() + ' (' + weekNames[date.getDay()] + ')');
+}
+function createLink(name, link) {
+  return (!link)? name:({link: {title: name, source: link}});
+}
+
 // eslint-disable-next-line  no-unused-vars
 var transfer = {
   md: function(sheetData) {
     var result = [];
     var rowTables = [];
-
-    function formatDate(date) {
-      return (!date)?'---':
-        ((date.getMonth() + 1) + '.' + date.getDate() + ' (' + weekNames[date.getDay()] + ')');
-    }
-    function createLink(name, link) {
-      return (!link)? name:({link: {title: name, source: link}});
-    }
 
     sheetData
         .reduce(function(result, data) {
@@ -154,44 +154,78 @@ var transfer = {
 
     return result;
   },
-  api: function(sheetData) {
+  api: function(sheetData, params) {
     var result = [];
     // var rowTables = [];
 
     sheetData
-        .reduce(function(result, data) {
+        .reduce(function(currentResult, data) {
           var [status, title, flag, startDate, endDate,
             location, oversea, link,
             ticketSource, ticketStartTime, ticketEndTime,
             c4sSource, c4sStartTime, c4sEndTime,
           ] = data;
 
-          result.push([
+          currentResult.push([
             status, title, flag, startDate, endDate, location, oversea, link,
             ticketSource, ticketStartTime, ticketEndTime, false,
           ]);
 
           if (c4sSource) {
-            var currentStartDate = new Date(c4sStartTime);
-            var currentEndDate = new Date(c4sEndTime);
-            var currentYear = currentStartDate.getFullYear();
-            var currentStartMonth = currentStartDate.getMonth() + 1;
-            var currentStartdate = currentStartDate.getDate();
-            var currentEndMonth = currentEndDate.getMonth() + 1;
-            var currentEnddate = currentEndDate.getDate();
-
-            result.push([
-              status, title, flag, currentYear, currentStartMonth, currentStartdate,
-              currentEndMonth, currentEnddate, location, oversea, link,
+            currentResult.push([
+              status, title, flag, c4sStartTime, c4sEndTime, location, oversea, link,
               c4sSource, ticketStartTime, ticketEndTime, true,
             ]);
           }
 
-          return result;
+          return currentResult;
         }, [])
+        .filter(function(data) {
+          var thisYear = (new Date()).getFullYear();
+          var thisMonth = (new Date()).getMonth();
+          // eslint-disable-next-line  no-unused-vars
+          var [status, title, flag, startDate, endDate,
+            // eslint-disable-next-line  no-unused-vars
+            location, oversea, link,
+            // eslint-disable-next-line  no-unused-vars
+            ticketSource, ticketStartTime, ticketEndTime,
+            // eslint-disable-next-line  no-unused-vars
+            c4sSource, c4sStartTime, c4sEndTime,
+          ] = data;
+
+          if (params.month !== undefined) {
+            return (new Date(endDate).getFullYear() === thisYear &&
+              ((new Date(endDate).getMonth() + 1) >= Number(params.month)) &&
+              ((new Date(startDate).getMonth() + 1) <= Number(params.month))
+            );
+          }
+
+          return (new Date(endDate).getFullYear() === thisYear &&
+            (new Date(endDate).getMonth()  >= thisMonth) &&
+            ((new Date(startDate).getMonth() + 1) <= thisMonth)
+          );
+        })
         .sort(function(currentValue, nextValue) {
-          return (new Date(currentValue[3], (currentValue[4] - 1), currentValue[5]) -
-                  new Date(nextValue[3], (nextValue[4] - 1), nextValue[5]));
+          return (new Date(currentValue[3]).getTime() - new Date(nextValue[3]).getTime());
+        })
+        .forEach(function(data) {
+          var [status, title, flag, startDate, endDate,
+            location, oversea, link,
+            ticketSource, ticketStartTime, ticketEndTime, isC4s,
+          ] = data;
+
+          result.push({
+            'startDate': startDate,
+            'endDate': endDate,
+            'ticketStartTime': ticketStartTime,
+            'ticketEndTime': ticketEndTime,
+            'flag': flag,
+            'name': createLink(((isC4s?'[徵稿] ':'') + title), link),
+            'oversea': (oversea?'🛫':'🛵'),
+            'ticket': (isC4s?'---':ticketSource),
+            'callForSpeaker': (!isC4s?'---':ticketSource),
+            'venue': createLink(location, ('https://maps.google.com/?q=' + encodeURI(location))),
+          });
         });
 
     return result;
