@@ -17,19 +17,19 @@ function doPost(e) {
 
     switch (action) {
       case 'create':
-        const title = params.title;
-        const flag = params.flag;
-        const startDate = params.startDate;
-        const endDate = params.endDate;
-        const location = params.location;
-        const oversea = params.oversea;
-        const source = params.source;
-        const ticketSource = params.ticketSource;
-        const ticketStartTime = params.ticketStartTime;
-        const ticketEndTime = params.ticketEndTime;
-        const callForSpeakerSource = params.callForSpeakerSource;
-        const callForSpeakerStartTime = params.callForSpeakerStartTime;
-        const callForSpeakerEndTime = params.callForSpeakerEndTime;
+        var title = params.title;
+        var flag = params.flag;
+        var startDate = params.startDate;
+        var endDate = params.endDate;
+        var location = params.location;
+        var oversea = params.oversea;
+        var source = params.source;
+        var ticketSource = params.ticketSource;
+        var ticketStartTime = params.ticketStartTime;
+        var ticketEndTime = params.ticketEndTime;
+        var callForSpeakerSource = params.callForSpeakerSource;
+        var callForSpeakerStartTime = params.callForSpeakerStartTime;
+        var callForSpeakerEndTime = params.callForSpeakerEndTime;
 
         // insertLog('info', 'Insert the new row (' + prefixSpreadsheetName + 'create)');
         currentSheet.appendRow(['success', title, flag, startDate, endDate, location, oversea,

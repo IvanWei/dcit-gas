@@ -201,7 +201,7 @@ var transfer = {
           }
 
           return (new Date(endDate).getFullYear() === thisYear &&
-            (new Date(endDate).getMonth()  >= thisMonth) &&
+            (new Date(endDate).getMonth() >= thisMonth) &&
             ((new Date(startDate).getMonth() + 1) <= thisMonth)
           );
         })
@@ -209,6 +209,7 @@ var transfer = {
           return (new Date(currentValue[3]).getTime() - new Date(nextValue[3]).getTime());
         })
         .forEach(function(data) {
+          // eslint-disable-next-line  no-unused-vars
           var [status, title, flag, startDate, endDate,
             location, oversea, link,
             ticketSource, ticketStartTime, ticketEndTime, isC4s,
