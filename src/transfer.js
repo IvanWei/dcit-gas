@@ -192,12 +192,12 @@ var transfer = {
         //     c4sSource, c4sStartTime, c4sEndTime,
         //   ] = data;
 
-        //   if (params.month !== undefined) {
-        //     return (new Date(endDate).getFullYear() === thisYear &&
-        //       ((new Date(endDate).getMonth() + 1) >= Number(params.month)) &&
-        //       ((new Date(startDate).getMonth() + 1) <= Number(params.month))
-        //     );
-        //   }
+    //   if (params.month !== undefined) {
+    //     return (new Date(endDate).getFullYear() === thisYear &&
+    //       ((new Date(endDate).getMonth() + 1) >= Number(params.month)) &&
+    //       ((new Date(startDate).getMonth() + 1) <= Number(params.month))
+    //     );
+    //   }
 
         //   return (new Date(endDate).getFullYear() === thisYear &&
         //     (new Date(endDate).getMonth() >= thisMonth) &&
