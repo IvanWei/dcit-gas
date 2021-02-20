@@ -22,6 +22,8 @@ function doGet(e) {
       case 'api':
         result = transfer.api(sheetData, (params || {}));
         break;
+      case 'html':
+        return HtmlService.createHtmlOutputFromFile('createEvent');
       default:
         result = [];
     }

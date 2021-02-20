@@ -12,6 +12,7 @@
     "SpreadsheetApp": true,
     "PropertiesService": true,
     "ContentService": true,
+    "HtmlService": true,
     "func": true,
     "transfer": true,
     "insertLog": true
