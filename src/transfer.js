@@ -56,8 +56,7 @@ var transfer = {
 
           return (
             (new Date(endDate).getFullYear() >= thisYear &&
-              (new Date(endDate).getMonth() >= new Date().getMonth()) &&
-              (new Date(endDate).getDate() >= new Date().getDate())
+              (new Date(endDate).getMonth() >= new Date().getMonth())
             )
           );
         })
@@ -165,6 +164,14 @@ var transfer = {
             c4sSource, c4sStartTime, c4sEndTime,
           ] = data;
 
+          if (startDate !== endDate) {
+            endDate = new Date(endDate).setDate(new Date(endDate).getDate() + 1);
+          }
+
+          if (c4sStartTime !== c4sEndTime) {
+            c4sEndTime = new Date(c4sEndTime).setDate(new Date(c4sEndTime).getDate() + 1);
+          }
+
           currentResult.push([
             status, title, flag, startDate, endDate, location, oversea, link,
             ticketSource, ticketStartTime, ticketEndTime, false,
@@ -194,8 +201,7 @@ var transfer = {
 
     //   if (params.month !== undefined) {
     //     return (new Date(endDate).getFullYear() === thisYear &&
-    //       ((new Date(endDate).getMonth() + 1) >= Number(params.month)) &&
-    //       ((new Date(startDate).getMonth() + 1) <= Number(params.month))
+    //       ((new Date(endDate).getMonth() + 1) >= Number(params.month))
     //     );
     //   }
 
