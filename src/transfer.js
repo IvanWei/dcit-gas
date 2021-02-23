@@ -158,7 +158,8 @@ var transfer = {
 
     function getDateString(date) {
       var thisDate = new Date(date);
-      return String(thisDate.getFullYear()) + String(thisDate.getMonth()) + String(thisDate.getDate());
+      return String(thisDate.getFullYear()) + String(thisDate.getMonth()) +
+        String(thisDate.getDate());
     }
 
     sheetData
@@ -168,9 +169,6 @@ var transfer = {
             ticketSource, ticketStartTime, ticketEndTime,
             c4sSource, c4sStartTime, c4sEndTime,
           ] = data;
-
-          var startDateOfObj = new Date(startDate);
-          var endDateOfObj = new Date(endDate);
 
           if (getDateString(startDate) !== getDateString(endDate)) {
             endDate = new Date(endDate).setDate(new Date(endDate).getDate() + 1);
