@@ -156,6 +156,11 @@ var transfer = {
   api: function(sheetData, params) {
     var result = [];
 
+    function getDateString(date) {
+      var thisDate = new Date(date);
+      return String(thisDate.getFullYear()) + String(thisDate.getMonth()) + String(thisDate.getDate());
+    }
+
     sheetData
         .reduce(function(currentResult, data) {
           var [status, title, flag, startDate, endDate,
@@ -164,11 +169,14 @@ var transfer = {
             c4sSource, c4sStartTime, c4sEndTime,
           ] = data;
 
-          if (startDate !== endDate) {
+          var startDateOfObj = new Date(startDate);
+          var endDateOfObj = new Date(endDate);
+
+          if (getDateString(startDate) !== getDateString(endDate)) {
             endDate = new Date(endDate).setDate(new Date(endDate).getDate() + 1);
           }
 
-          if (c4sStartTime !== c4sEndTime) {
+          if (getDateString(c4sStartTime) !== getDateString(c4sEndTime)) {
             c4sEndTime = new Date(c4sEndTime).setDate(new Date(c4sEndTime).getDate() + 1);
           }
 
