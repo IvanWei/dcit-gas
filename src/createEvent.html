@@ -17,30 +17,33 @@
     </style>
     <script type="text/javascript">
       function submit() {
-        const data = new FormData(document.querySelector('form'));
-        var formData = {};
-        data.forEach(function(value, key){formData[key] = value;});
+        const thisForm = document.querySelector('form');
+        if (thisForm.reportValidity()) {
+          const data = new FormData(thisForm);
+          var formData = {};
+          data.forEach(function(value, key){formData[key] = value;});
 
-        google.script.run.createEvent(formData);
-        document.querySelector('form').reset();
+          google.script.run.createEvent(formData);
+          document.querySelector('form').reset();
 
-        if (google.script.host.close) {
-          google.script.host.close();
+          if (google.script.host.close) {
+            google.script.host.close();
+          }
         }
       }
     </script>
   </head>
   <body>
-    <form class="pure-form pure-form-stacked" onsubmit='submit();' id="form">
+    <form class="pure-form pure-form-stacked">
       <div><label>Activity Name<input name='title' placeholder='Activity Name' required /></label></div>
       <div><label>Flag<input name='flag' placeholder='使用「,」分隔' /></label></div>
       <fieldset>
         <label>
           Activity Date
           <div style='display: inline-flex;align-items: center;width: 100%;'>
-            <input type='date' name='startDate' style='margin-right: 5px;' required />
+            <input type='datetime-local' name='startDate' style='margin-right: 5px;' required />
             to
-            <input type='date' name='endDate' style='margin-left: 5px;' required />
+            <input type='datetime-local' name='endDate' style='margin-left: 5px;' required />
           </div>
         </label>
       </fieldset>
@@ -56,9 +59,9 @@
         <label>
           Ticket Date
           <div style='display: inline-flex;align-items: center;width: 100%;'>
-            <input type='date' name='ticketStartTime' style='margin-right: 5px;' />
+            <input type='datetime-local' name='ticketStartTime' style='margin-right: 5px;' />
             to
-            <input type='date' name='ticketEndTime' style='margin-left: 5px;' />
+            <input type='datetime-local' name='ticketEndTime' style='margin-left: 5px;' />
           </div>
         </label>
       </fieldset>
@@ -76,6 +79,6 @@
     </form>
 
     <input class="pure-button" type="button" value="Close" onclick="google.script.host.close()" />
-    <input class="pure-button" type="submit" value="Submit" form="form" />
+    <input class="pure-button" type="button" value="Submit" onclick='submit();' />
   </body>
 </html>
