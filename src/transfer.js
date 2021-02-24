@@ -116,7 +116,7 @@ var transfer = {
 
             result.push({'h2': (currentMonth !== null?monthNames[currentMonth]:'UnKnown')});
             result.push({'table': {
-              'headers': ['Start date', 'End date', 'Name', 'Oversea',
+              'headers': ['Start date', 'End date', 'Name',
                 'Ticket', 'Call for Speaker', 'Venue',
               ],
               'rows': rowTables,
@@ -129,7 +129,7 @@ var transfer = {
               'Start date': formatDate(startDate),
               'End date': formatDate(endDate),
               'Name': createLink(title, link),
-              'Oversea': (oversea?'🛫':'🛵'),
+              // 'Oversea': (oversea?'🛫':'🛵'),
               'Ticket': createLink(ticketTitle, ticketSource),
               'Call for Speaker': '---',
               'Venue': createLink(((oversea?'🛫':'🛵') + ' ' + location),
@@ -142,7 +142,7 @@ var transfer = {
               'Start date': formatDate(startDate),
               'End date': formatDate(endDate),
               'Name': createLink(('[徵稿] ' + title), link),
-              'Oversea': (oversea?'🛫':'🛵'),
+              // 'Oversea': (oversea?'🛫':'🛵'),
               'Ticket': '---',
               'Call for Speaker': createLink(ticketTitle, ticketSource),
               'Venue': createLink(((oversea?'🛫':'🛵') + ' ' + location),
