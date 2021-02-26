@@ -242,4 +242,27 @@ var transfer = {
 
     return result;
   },
+  org: function(sheetData) {
+    return [
+      {'h1': 'List of Organizations'},
+      {'table': {
+        'headers': ['Name', 'Main Website', 'Facebook'],
+        'rows': sheetData.reduce(function(result, data) {
+          // eslint-disable-next-line  no-unused-vars
+          var [status, name, mainWebsite, fbLink] = data;
+
+          result.push({
+            'Name': name,
+            'Main Website': {'link': {'title': 'Link', 'source': mainWebsite}},
+            'Facebook': {'link': {'title': 'Link', 'source': fbLink}},
+          });
+
+          return result;
+        }, [])
+            .sort(function(currentValue, nextValue) {
+              return (currentValue.name - currentValue.name);
+            }),
+      }},
+    ];
+  },
 };

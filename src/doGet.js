@@ -19,6 +19,9 @@ function doGet(e) {
       case 'md':
         result = transfer.md(sheetData);
         break;
+      case 'org':
+        result = transfer.org(func.getSheetAllData(app.getSheets()[1]));
+        break;
       case 'api':
         result = transfer.api(sheetData, (params || {}));
         break;
