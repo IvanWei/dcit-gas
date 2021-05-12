@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/IvanWei/dcit-gas#readme",
   "dependencies": {
-    "@google/clasp": "^2.3.0"
+    "@google/clasp": "^2.3.1"
   },
   "devDependencies": {
     "eslint": "^7.11.0",
