@@ -156,12 +156,6 @@ var transfer = {
   api: function(sheetData, params) {
     var result = [];
 
-    function getDateString(date) {
-      var thisDate = new Date(date);
-      return String(thisDate.getFullYear()) + String(thisDate.getMonth()) +
-        String(thisDate.getDate());
-    }
-
     sheetData
         .reduce(function(currentResult, data) {
           var [status, title, flag, startDate, endDate,
@@ -169,14 +163,6 @@ var transfer = {
             ticketSource, ticketStartTime, ticketEndTime,
             c4sSource, c4sStartTime, c4sEndTime,
           ] = data;
-
-          if (getDateString(startDate) !== getDateString(endDate)) {
-            endDate = new Date(endDate).setDate(new Date(endDate).getDate() + 1);
-          }
-
-          if (getDateString(c4sStartTime) !== getDateString(c4sEndTime)) {
-            c4sEndTime = new Date(c4sEndTime).setDate(new Date(c4sEndTime).getDate() + 1);
-          }
 
           currentResult.push([
             status, title, flag, startDate, endDate, location, oversea, link,
@@ -192,30 +178,6 @@ var transfer = {
 
           return currentResult;
         }, [])
-        // .filter(function(data) {
-        //   var thisYear = (new Date()).getFullYear();
-        //   var thisMonth = (new Date()).getMonth();
-        //   // eslint-disable-next-line  no-unused-vars
-        //   var [status, title, flag, startDate, endDate,
-        //     // eslint-disable-next-line  no-unused-vars
-        //     location, oversea, link,
-        //     // eslint-disable-next-line  no-unused-vars
-        //     ticketSource, ticketStartTime, ticketEndTime,
-        //     // eslint-disable-next-line  no-unused-vars
-        //     c4sSource, c4sStartTime, c4sEndTime,
-        //   ] = data;
-
-    //   if (params.month !== undefined) {
-    //     return (new Date(endDate).getFullYear() === thisYear &&
-    //       ((new Date(endDate).getMonth() + 1) >= Number(params.month))
-    //     );
-    //   }
-
-        //   return (new Date(endDate).getFullYear() === thisYear &&
-        //     (new Date(endDate).getMonth() >= thisMonth) &&
-        //     ((new Date(startDate).getMonth() + 1) <= thisMonth)
-        //   );
-        // })
         .sort(function(currentValue, nextValue) {
           return (new Date(currentValue[3]).getTime() - new Date(nextValue[3]).getTime());
         })

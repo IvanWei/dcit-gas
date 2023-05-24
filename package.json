@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "push": "npx clasp push -f",
-    "deploy": "npx clasp deploy",
-    "linter": "npx eslint ./src/*.js"
+    "push": "clasp push -f",
+    "deploy": "clasp deploy",
+    "prepare": "husky install",
+    "lint": "eslint ./src/*.js"
   },
   "repository": {
     "type": "git",
@@ -29,16 +30,11 @@
   },
   "homepage": "https://github.com/IvanWei/dcit-gas#readme",
   "dependencies": {
-    "@google/clasp": "^2.4.0"
+    "@google/clasp": "^2.4.2"
   },
   "devDependencies": {
-    "eslint": "^7.11.0",
+    "eslint": "^8.41.0",
     "eslint-config-google": "^0.14.0",
-    "husky": "^4.3.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm run linter"
-    }
+    "husky": "^8.0.3"
   }
 }
